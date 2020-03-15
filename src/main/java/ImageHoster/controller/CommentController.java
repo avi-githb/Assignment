@@ -25,9 +25,6 @@ public class CommentController {
 private ImageService imageService;
 
 @Autowired
-private ImageController imageController;
-
-@Autowired
 private CommentService commentService;
 
 @RequestMapping(value = "/image/{imageId}/{imageTitle}/comments", method = RequestMethod.POST)
