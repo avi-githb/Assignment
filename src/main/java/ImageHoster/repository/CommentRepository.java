@@ -3,6 +3,8 @@ package ImageHoster.repository;
 import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -27,7 +29,6 @@ public class CommentRepository {
         }
         return comment;
     }
-
 
 
     public List<Comment> getComment(Integer imageId) {

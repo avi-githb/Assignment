@@ -9,6 +9,7 @@ import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -126,11 +127,13 @@ public class ImageController<TexturePaintContext> {
     public String editImage(@RequestParam("imageId") Integer imageId, HttpSession session,Model model) {
         Image image = imageService.getImage(imageId);
 
+        //info about current logged in user
         User curr_User = (User) session.getAttribute("loggeduser");
-        User imageUser = new User(); //
+        //Image User means the user who uploaded this image
+        User imageUser = new User();
         imageUser=image.getUser();
 
-
+        //if image user == current logged in user let him edit the image else print error
         if(imageUser.getUsername().equals(curr_User.getUsername())) {
             String tags = convertTagsToString(image.getTags());
             model.addAttribute("image", image);
@@ -145,7 +148,28 @@ public class ImageController<TexturePaintContext> {
         }
     }
 
+    @RequestMapping(value = "/editImage", method = RequestMethod.PUT)
+    public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session) throws IOException {
 
+        Image image = imageService.getImage(imageId);
+        String updatedImageData = convertUploadedFileToBase64(file);
+        List<Tag> imageTags = findOrCreateTags(tags);
+
+        if (updatedImageData.isEmpty())
+            updatedImage.setImageFile(image.getImageFile());
+        else {
+            updatedImage.setImageFile(updatedImageData);
+        }
+
+        updatedImage.setId(imageId);
+        User user = (User) session.getAttribute("loggeduser");
+        updatedImage.setUser(user);
+        updatedImage.setTags(imageTags);
+        updatedImage.setDate(new Date());
+
+        imageService.updateImage(updatedImage);
+        return "redirect:/images/" + updatedImage.getTitle();
+    }
 
 
     //This controller method is called when the request pattern is of type 'deleteImage' and also the incoming request is of DELETE type
