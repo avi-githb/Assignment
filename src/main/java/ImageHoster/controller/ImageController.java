@@ -154,7 +154,7 @@ public class ImageController<TexturePaintContext> {
     }
 
     @RequestMapping(value = "/editImage", method = RequestMethod.PUT)
-    public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session) throws IOException {
+    public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session, Model model) throws IOException {
 
         Image image = imageService.getImage(imageId);
         String updatedImageData = convertUploadedFileToBase64(file);
@@ -173,7 +173,11 @@ public class ImageController<TexturePaintContext> {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images" + updatedImage.getTitle();
+
+        model.addAttribute("tags", image.getTags());
+        List<Comment> com = commentService.getComment(imageId);
+        model.addAttribute("comments",com);
+        return "images/image";
     }
 
 
