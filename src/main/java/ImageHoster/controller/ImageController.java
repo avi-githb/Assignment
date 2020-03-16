@@ -133,7 +133,9 @@ public class ImageController<TexturePaintContext> {
         User imageUser = new User();
         imageUser=image.getUser();
 
-        //if image user == current logged in user let him edit the image else print error
+        //curr_user = logged in user, imageUser = user who have uploaded the image
+        //we will check if logged in user is same as the user who created the image and allow him to edit/delete the image
+
         if(imageUser.getUsername().equals(curr_User.getUsername())) {
             String tags = convertTagsToString(image.getTags());
             model.addAttribute("image", image);
@@ -171,7 +173,7 @@ public class ImageController<TexturePaintContext> {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        return "redirect:/images" + updatedImage.getTitle();
     }
 
 
@@ -184,6 +186,9 @@ public class ImageController<TexturePaintContext> {
         User curr_User = (User) session.getAttribute("loggeduser");
         User imageUser = new User(); //
         imageUser=image.getUser();
+
+        //curr_user = logged in user, imageUser = user who have uploaded the image
+        //we will check if logged in user is same as the user who created the image and allow him to edit/delete the image
 
         if(imageUser.getUsername().equals(curr_User.getUsername())) {
             imageService.deleteImage(imageId);

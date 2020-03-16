@@ -27,6 +27,7 @@ private ImageService imageService;
 @Autowired
 private CommentService commentService;
 
+//this method will add/create a new comment
 @RequestMapping(value = "/image/{imageId}/{imageTitle}/comments", method = RequestMethod.POST)
 public String addComment(@PathVariable("imageId") Integer imageId,@PathVariable("imageTitle") String imageTitle,@RequestParam(name="comment") String comment,Comment newComment,HttpSession session) throws IOException {
     User user = (User) session.getAttribute("loggeduser");
@@ -38,9 +39,8 @@ public String addComment(@PathVariable("imageId") Integer imageId,@PathVariable(
 
     return "redirect:/images/{imageId}/{imageTitle}";
 
-    //return "redirect:/images";
 }
-
+    //this method is used to pull a comment from db
     @RequestMapping("comments/{imageId}")
     public String getUserComments(@PathVariable("imageId") Integer imageId,Model model) {
         List<Comment> comment = commentService.getComment(imageId);
