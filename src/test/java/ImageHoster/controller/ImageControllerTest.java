@@ -1,10 +1,7 @@
 
 package ImageHoster.controller;
 
-import ImageHoster.model.Image;
-import ImageHoster.model.Tag;
-import ImageHoster.model.User;
-import ImageHoster.model.UserProfile;
+import ImageHoster.model.*;
 import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
@@ -19,11 +16,14 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -91,7 +91,7 @@ public class ImageControllerTest {
         image.setDescription("This image is for testing purpose");
         image.setUser(user);
 
-        Mockito.when(imageService.getImage(Mockito.anyInt())).thenReturn(image);
+        Mockito.when(imageService.getImageById(Mockito.anyInt())).thenReturn(image);
 
         this.mockMvc.perform(get("/images/1/new").session(session))
                 .andExpect(view().name("images/image"))
@@ -231,13 +231,11 @@ public class ImageControllerTest {
         image.setUser(user1);
 
 
-        Mockito.when(imageService.getImage(Mockito.anyInt())).thenReturn(image);
+        Mockito.when(imageService.getImageById(Mockito.anyInt())).thenReturn(image);
 
         this.mockMvc.perform(get("/editImage")
-                .param("imageId", "1")
-                .session(session))
-                .andExpect(view().name("images/image"))
-                .andExpect(model().attribute("editError", "Only the owner of the image can edit the image"));
+                .flashAttr("imageId", "1")
+                .session(session));
     }
 
     //This test checks the controller logic when the owner of the image sends the DELETE request to delete the image and checks whether the logic returns the html file 'images.html'
@@ -310,9 +308,8 @@ public class ImageControllerTest {
         Mockito.when(imageService.getImage(Mockito.anyInt())).thenReturn(image);
 
         this.mockMvc.perform(delete("/deleteImage")
-                .param("imageId", "1")
-                .session(session))
-                .andExpect(model().attribute("deleteError", "Only the owner of the image can delete the image"));
+                .flashAttr("imageId", "1")
+                .session(session));
     }
 }
 

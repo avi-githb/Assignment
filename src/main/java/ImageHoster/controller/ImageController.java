@@ -144,6 +144,9 @@ public class ImageController<TexturePaintContext> {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("image", image);
             model.addAttribute("editError", error);
+            model.addAttribute("tags", image.getTags());
+            List<Comment> com = commentService.getComment(imageId);
+            model.addAttribute("comments",com);
             return "images/image";
         }
     }
@@ -190,6 +193,9 @@ public class ImageController<TexturePaintContext> {
             String error = "Only the owner of the image can delete the image";
             model.addAttribute("image", image);
             model.addAttribute("deleteError", error);
+            model.addAttribute("tags", image.getTags());
+            List<Comment> com = commentService.getComment(imageId);
+            model.addAttribute("comments",com);
             return "images/image";
         }
     }
